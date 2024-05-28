@@ -1,0 +1,19 @@
+.intech {
+    font-size: x-large;
+    font-weight: 500;
+}
+
+.imgBack {
+    background-color: rgb(188, 180, 180);
+    height: 70px;
+    width: 70px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.selection{
+    padding: 8px;
+    background-color: rgb(231, 231, 231);
+    border: none;
+}
