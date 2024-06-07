@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export default function FileUpload() {
-  const [image, setImages] = useState([]);
+  const [images, setImages] = useState([]);
   const [progress, setProgress] = useState({ started: false, pc: 0 });
   const [msg, setMsg] = useState("");
+  const [uploadedImages, setUploadedImages] = useState([]);
+
+  const fetchImages = () => {
+    axios.get('http://localhost:8080/image/fileSystem')
+      .then(res => {
+        setUploadedImages(res.data);
+      })
+      .catch(err => {
+        console.error(err);
+        setMsg("Failed to fetch images");
+      });
+  };
 
   const uploadFiles = (formData, retries = 3, delay = 3000) => {
     axios.post('http://localhost:8080/image/fileSystem', formData, {
@@ -18,7 +30,7 @@ export default function FileUpload() {
     })
       .then(res => {
         setMsg("Upload successful");
-        console.log(res.data);
+        fetchImages();
       })
       .catch(err => {
         console.error(err);
@@ -34,22 +46,25 @@ export default function FileUpload() {
       });
   }
 
-  function handleUpload(event) {
+  const handleUpload = (event) => {
     event.preventDefault();
-    if (!image || image.length === 0) {
+    if (!images || images.length === 0) {
       setMsg("No file selected");
       return;
     }
     const formData = new FormData();
-    Array.from(image).forEach((file, index) => {
-      formData.append(`image`, file); // Set the key as "image" for each file
+    Array.from(images).forEach((file) => {
+      formData.append('image', file);
     });
-  
+
     setMsg("Uploading...");
     setProgress({ started: true, pc: 0 });
     uploadFiles(formData);
   }
-  
+
+  useEffect(() => {
+    fetchImages();
+  }, []);
 
   return (
     <div>
@@ -60,6 +75,15 @@ export default function FileUpload() {
         {progress.started && <progress max="100" value={progress.pc}></progress>}
         {msg && <span>{msg}</span>}
       </form>
+
+      <h3>Uploaded Images</h3>
+      <ul>
+        {uploadedImages.map((image, index) => (
+          <li key={index}>
+            <img src={`http://localhost:8080/image/fileSystem/${image.filename}`} alt={image.filename} width="100" />
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

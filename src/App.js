@@ -1,5 +1,5 @@
 import React from 'react'
-// import Form from './Component/Form'
+import Form from './Component/Form'
 import FileUpload from './Component/FileUpload'
 // import Erp from './erp'
 // import FormTable from './Form'
@@ -11,7 +11,8 @@ export default function App() {
   return (
     <div>
       {/* <Erp /> */}
-      {/* <Form /> */}
+      <Form />
+      <hr></hr>
       {/* <FormTable /> */}
       {/* <Sidebar /> */}
       <FileUpload />
